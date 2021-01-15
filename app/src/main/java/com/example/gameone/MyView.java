@@ -1,6 +1,9 @@
 package com.example.gameone;
 
 import android.content.Context;
+import android.graphics.Canvas;
+import android.graphics.Color;
+import android.graphics.Paint;
 import android.util.AttributeSet;
 import android.view.View;
 
@@ -48,5 +51,22 @@ public class MyView extends View {
 
         setMeasuredDimension(width, height);
     }
+    @Override
+    protected void onDraw(Canvas canvas) {
+        //调用父View的onDraw函数，因为View这个类帮我们实现了一些
+        // 基本的而绘制功能，比如绘制背景颜色、背景图片等
+        super.onDraw(canvas);
+        int r = getMeasuredWidth() / 2;//也可以是getMeasuredHeight()/2,本例中我们已经将宽高设置相等了
+        //圆心的横坐标为当前的View的左边起始位置+半径
+        int centerX = getLeft() + r;
+        //圆心的纵坐标为当前的View的顶部起始位置+半径
+        int centerY = getTop() + r;
 
+        Paint paint = new Paint();
+        paint.setColor(Color.GREEN);
+        //开始绘制
+        canvas.drawCircle(centerX, centerY, r, paint);
+
+
+    }
 }
