@@ -14,11 +14,19 @@
         />
 
     <com.example.gameone.MyLine
+        android:background="@color/black"
         android:layout_below="@id/tv_text"
         android:layout_marginTop="10dp"
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_height="10dp"
         android:id="@+id/tv_line"
+        />
+    <com.example.gameone.MyCircle
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/tv_circle"
+        android:layout_marginTop="50dp"
+        android:layout_below="@id/tv_line"
         />
 
 </RelativeLayout>
