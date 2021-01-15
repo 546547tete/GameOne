@@ -24,7 +24,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
     private void initView() {
         bt_start = (Button) findViewById(R.id.bt_start);
-        bt_continue = (Button) findViewById(R.id.bt_continue);
         bt_stop = (Button) findViewById(R.id.bt_stop);
 
         bt_start.setOnClickListener(this);
@@ -37,9 +36,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         switch (v.getId()) {
             case R.id.bt_start:
                 startActivity(new Intent(MainActivity.this,DrawActivity.class));
-                break;
-            case R.id.bt_continue:
-
                 break;
             case R.id.bt_stop:
                 finish();
