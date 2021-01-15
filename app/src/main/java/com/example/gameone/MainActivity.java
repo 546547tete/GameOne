@@ -3,9 +3,13 @@ package com.example.gameone;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.LinearLayout;
 
 import androidx.appcompat.app.AppCompatActivity;
+
+import com.gyf.immersionbar.ImmersionBar;
 
 public class MainActivity extends AppCompatActivity implements View.OnClickListener {
 
@@ -17,6 +21,12 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        ImmersionBar.with(this)
+                .fitsSystemWindows(true)
+                .keyboardEnable(true)
+//                .statusBarColor(R.color.white)
+                .statusBarDarkFont(true, 0.2f)
+                .init();
         initView();
 
         //
@@ -27,7 +37,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         bt_stop = (Button) findViewById(R.id.bt_stop);
 
         bt_start.setOnClickListener(this);
-        bt_continue.setOnClickListener(this);
         bt_stop.setOnClickListener(this);
     }
 

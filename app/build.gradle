@@ -32,4 +32,8 @@ dependencies {
     androidTestImplementation 'androidx.test.ext:junit:1.1.2'
     androidTestImplementation 'androidx.test.espresso:espresso-core:3.3.0'
     implementation project(path: ':httplibrary')
+
+
+    //沉浸式状态栏
+    implementation 'com.gyf.immersionbar:immersionbar:3.0.0-beta05'
 }
