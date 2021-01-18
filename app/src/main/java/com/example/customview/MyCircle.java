@@ -1,4 +1,4 @@
-package com.example.gameone;
+package com.example.customview;
 
 import android.content.Context;
 import android.graphics.Canvas;
@@ -10,10 +10,12 @@ import android.view.View;
 
 import androidx.annotation.Nullable;
 
+import com.example.bean.NumberBean;
+
 public class MyCircle extends View {
 
     private Paint paint;
-    private int rect;
+    private int radius;
     private int x;
     private int y;
 
@@ -26,14 +28,14 @@ public class MyCircle extends View {
     @Override
     protected void onDraw(Canvas canvas) {
         paint.setColor(Color.GREEN);
-        canvas.drawCircle(x,y,rect,paint);
+        canvas.drawCircle(x,y,radius,paint);
         super.onDraw(canvas);
 
     }
 
-    public void init(int rect, int x, int y){
-        this.rect = rect;
-        this.x = x;
-        this.y = y;
+    public void setData(NumberBean numberBean){
+        this.radius = numberBean.getRadius();
+        this.x = numberBean.getPlace_x();
+        this.y = numberBean.getPlace_x();
     }
 }

@@ -1,4 +1,4 @@
-package com.example.gameone;
+package com.example.customview;
 
 import android.content.Context;
 import android.graphics.Canvas;
