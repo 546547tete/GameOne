@@ -54,6 +54,7 @@ public class DrawActivity extends AppCompatActivity {
     }
 
     private void setCode(final NumberBean bean) {
+        int code = bean.getNumber();
         switch (bean.getShape()) {
             case 1: //三角形
                 myTriangle = new MyTriangle(this, null);
@@ -74,52 +75,54 @@ public class DrawActivity extends AppCompatActivity {
                 codeText(bean);
                 break;
             case 4: //多边形
-                MyPolygon myPolygon = new MyPolygon(this, null);
+                MyPolygon myPolygon;
+                myPolygon = new MyPolygon(this, null);
                 mLayoutRl.addView(myPolygon);
                 myPolygon.setData(bean);
                 codeText(bean);
-                break;
-        }
+                /**
+                 * 监听点击事件
+                 */
+                textView.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        String trim = textView.getText().toString().trim();
+                        int parseInt = Integer.parseInt(trim);
+                        int number_i, number_j;
+                        //循环判断出来最小的数字
+                        for (int i = 0; i < list1.size(); i++) {
+                            for (int j = 0; j < list1.size() - 1; j++) {
+                                number_i = list1.get(i);
+                                number_j = list1.get(j);
+                                if (number_i < number_j) {
+                                    int num = number_i;
+                                    number_i = number_j;
+                                    number_j = num;
 
-        /**
-         * 监听点击事件
-         */
-        textView.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                String trim = textView.getText().toString().trim();
-                int parseInt = Integer.parseInt(trim);
-                int number_i, number_j;
-                //循环判断出来最小的数字
-                for (int i = 0; i < list1.size(); i++) {
-                    for (int j = 0; j < list1.size() - 1; j++) {
-                        number_i = list1.get(i);
-                        number_j = list1.get(j);
-                        if (number_i > number_j) {
-                            int num = number_i;
-                            number_i = number_j;
-                            number_j = num;
-
-                            /**
-                             * 如果点击的数字是最小的，那么就消失
-                             */
-                            if (num==parseInt){
-                                list1.remove(list1.get(i));
-                                myTriangle = null;
-                                textView = null;
+                                    /**
+                                     * 如果点击的数字是最小的，那么就消失
+                                     */
+                                    if (num==parseInt){
+                                        list1.remove(list1.get(i));
+                                        myTriangle = null;
+                                        textView.setVisibility(View.GONE);
+                                    }
+                                }
                             }
                         }
                     }
-                }
-            }
-        });
+                });
+                break;
+        }
+
+
     }
 
     private void initView() {
         mLayoutRl = (RelativeLayout) findViewById(R.id.rl_layout);
         lists = new ArrayList<>();
-        numberBean = new NumberBean(100, 500, 500, 6, "564812", 4);
-        lists.add(numberBean);
+        lists.add(new NumberBean(200, 800, 800, 9, "564812", 4));
+        lists.add(new NumberBean(100, 500, 500, 6, "564812", 4));
 
         /**
          * 倒计时
@@ -161,7 +164,7 @@ public class DrawActivity extends AppCompatActivity {
         //设置位置
         params.setMargins(place_x - radius / 2, place_y - radius / 2, 0, 0);
         textView.setLayoutParams(params);
-        textView.setText(number);
+        textView.setText(number+"");
         //文字大小
         textView.setTextSize(radius / 3);
         textView.setGravity(Gravity.CENTER);

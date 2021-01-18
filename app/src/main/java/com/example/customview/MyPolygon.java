@@ -38,6 +38,7 @@ public class MyPolygon extends View {
         path.lineTo(x3,y3);
         path.lineTo(x4,y4);
         path.lineTo(x5,y5);
+        path.lineTo(x6,y6);
 //        path.lineTo(x1,y1);
         canvas.drawPath(path,paint);
         super.onDraw(canvas);
