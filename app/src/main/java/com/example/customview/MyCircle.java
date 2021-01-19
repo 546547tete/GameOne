@@ -33,9 +33,9 @@ public class MyCircle extends View {
 
     }
 
-    public void setData(NumberBean numberBean){
+    public void setData(NumberBean.DataBean numberBean){
         this.radius = numberBean.getRadius();
-        this.x = numberBean.getPlace_x();
-        this.y = numberBean.getPlace_x();
+        this.x = numberBean.getX();
+        this.y = numberBean.getY();
     }
 }

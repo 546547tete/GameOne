@@ -9,7 +9,7 @@ import com.example.httplibrary.HttpGlobalConfig;
 public class GameApplication extends Application {
     public static GameApplication baseapp;
     private static GameApplication sInstance;
-    String game="";
+    String game="http://192.168.31.13:8000/";
 
     @Override
     public void onCreate() {

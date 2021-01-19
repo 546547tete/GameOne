@@ -40,10 +40,10 @@ public class MyQuadrilateral extends View {
         super.onDraw(canvas);
     }
 
-    public void setData(NumberBean numberBean){
+    public void setData(NumberBean.DataBean numberBean){
         int radius = numberBean.getRadius();
-        int place_x = numberBean.getPlace_x();
-        int place_y = numberBean.getPlace_y();
+        int place_x = numberBean.getX();
+        int place_y = numberBean.getY();
         int a1 = radius * radius;
         int a2 = radius * radius;
         int a3 = a1 + a2;

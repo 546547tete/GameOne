@@ -1,80 +1,128 @@
 package com.example.bean;
 
+import java.util.List;
+
 public class NumberBean {
 
-    private int radius;  // 半径
-    private int place_x;  // X-坐标
-    private int place_y;  // Y-坐标
-    private int number;  // 具体数字
-    private String colour;  // 颜色
-    private int shape;  // 形状
 
-    public NumberBean(int radius, int place_x, int place_y, int number, String colour, int shape) {
-        this.radius = radius;
-        this.place_x = place_x;
-        this.place_y = place_y;
-        this.number = number;
-        this.colour = colour;
-        this.shape = shape;
+    /**
+     * error_code : 0
+     * error_msg : Successful.
+     * data : [{"num":77,"color":"FF7F00","shape":4,"x":200,"y":300,"radius":50},{"num":17,"color":"FF0000","shape":8,"x":150,"y":450,"radius":50},{"num":11,"color":"2E2B5F","shape":5,"x":150,"y":700,"radius":50},{"num":79,"color":"00FF00","shape":3,"x":400,"y":850,"radius":50},{"num":48,"color":"FF7F00","shape":6,"x":350,"y":450,"radius":50},{"num":16,"color":"FFFF00","shape":6,"x":50,"y":550,"radius":50}]
+     */
+
+    private int error_code;
+    private String error_msg;
+    private List<DataBean> data;
+
+    public int getError_code() {
+        return error_code;
     }
 
-    public int getRadius() {
-        return radius;
+    public void setError_code(int error_code) {
+        this.error_code = error_code;
     }
 
-    public void setRadius(int radius) {
-        this.radius = radius;
+    public String getError_msg() {
+        return error_msg;
     }
 
-    public int getPlace_x() {
-        return place_x;
+    public void setError_msg(String error_msg) {
+        this.error_msg = error_msg;
     }
 
-    public void setPlace_x(int place_x) {
-        this.place_x = place_x;
+    public List<DataBean> getData() {
+        return data;
     }
 
-    public int getPlace_y() {
-        return place_y;
+    public void setData(List<DataBean> data) {
+        this.data = data;
     }
 
-    public void setPlace_y(int place_y) {
-        this.place_y = place_y;
-    }
+    public static class DataBean {
+        /**
+         * num : 77
+         * color : FF7F00
+         * shape : 4
+         * x : 200
+         * y : 300
+         * radius : 50
+         */
 
-    public int getNumber() {
-        return number;
-    }
+        private int num;
+        private String color;
+        private int shape;
+        private int x;
+        private int y;
+        private int radius;
 
-    public void setNumber(int number) {
-        this.number = number;
-    }
+        public int getNum() {
+            return num;
+        }
 
-    public String getColour() {
-        return colour;
-    }
+        public void setNum(int num) {
+            this.num = num;
+        }
 
-    public void setColour(String colour) {
-        this.colour = colour;
-    }
+        public String getColor() {
+            return color;
+        }
 
-    public int getShape() {
-        return shape;
-    }
+        public void setColor(String color) {
+            this.color = color;
+        }
 
-    public void setShape(int shape) {
-        this.shape = shape;
+        public int getShape() {
+            return shape;
+        }
+
+        public void setShape(int shape) {
+            this.shape = shape;
+        }
+
+        public int getX() {
+            return x;
+        }
+
+        public void setX(int x) {
+            this.x = x;
+        }
+
+        public int getY() {
+            return y;
+        }
+
+        public void setY(int y) {
+            this.y = y;
+        }
+
+        public int getRadius() {
+            return radius;
+        }
+
+        public void setRadius(int radius) {
+            this.radius = radius;
+        }
+
+        @Override
+        public String toString() {
+            return "DataBean{" +
+                    "num=" + num +
+                    ", color='" + color + '\'' +
+                    ", shape=" + shape +
+                    ", x=" + x +
+                    ", y=" + y +
+                    ", radius=" + radius +
+                    '}';
+        }
     }
 
     @Override
     public String toString() {
         return "NumberBean{" +
-                "radius=" + radius +
-                ", place_x=" + place_x +
-                ", place_y=" + place_y +
-                ", number=" + number +
-                ", colour=" + colour +
-                ", shape=" + shape +
+                "error_code=" + error_code +
+                ", error_msg='" + error_msg + '\'' +
+                ", data=" + data +
                 '}';
     }
 }

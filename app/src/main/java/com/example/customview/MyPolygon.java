@@ -14,7 +14,7 @@ import com.example.bean.NumberBean;
 
 public class MyPolygon extends View {
 
-    private final Paint paint;
+    private Paint paint;
     private Path path;
     int x1,y1;
     int x2,y2;
@@ -44,10 +44,10 @@ public class MyPolygon extends View {
         super.onDraw(canvas);
     }
 
-    public void setData(NumberBean numberBean){
+    public void setData(NumberBean.DataBean numberBean){
         int radius = numberBean.getRadius();
-        int place_x = numberBean.getPlace_x();
-        int place_y = numberBean.getPlace_y();
+        int place_x = numberBean.getX();
+        int place_y = numberBean.getY();
         int i1 = radius / 2;
         int a1 = radius * radius;
         int a2 = i1 * i1;

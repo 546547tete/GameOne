@@ -14,7 +14,7 @@ import com.example.bean.NumberBean;
 
 public class MyTriangle extends View {
 
-    private final Paint paint;
+    private Paint paint;
     private Path path;
     private int x1,y1;
     private int x2,y2;
@@ -23,7 +23,7 @@ public class MyTriangle extends View {
     public MyTriangle(Context context, @Nullable AttributeSet attrs) {
         super(context, attrs);
         paint = new Paint();
-        paint.setColor(getResources().getColor(Color.WHITE));
+        paint.setColor(Color.GREEN);
     }
 
     @Override
@@ -39,10 +39,10 @@ public class MyTriangle extends View {
         super.onDraw(canvas);
     }
 
-    public void setData(NumberBean numberBean){
-        int radius = numberBean.getNumber();
-        int place_x = numberBean.getPlace_x();
-        int place_y = numberBean.getPlace_y();
+    public void setData(NumberBean.DataBean numberBean){
+        int radius = numberBean.getNum();
+        int place_x = numberBean.getX();
+        int place_y = numberBean.getY();
         int i = radius * radius;
         int i1 = radius / 2;
         int i2 = i1 * i1;
