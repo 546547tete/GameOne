@@ -102,42 +102,13 @@ public class DrawActivity extends AppCompatActivity {
         int height = defaultDisplay.getHeight();
         int radius = height / (numCount * 2);
 
-//        new HttpClient.Builder()
-//                .get()
-//                .setApiUrl("numCount/"+numCount+"/radius/"+radius+"/maxX/"+width+"/maxY/"+height)
-//                .build()
-//                .request(new HttpCallBack<List<NumberBean>>() {
-//                    @Override
-//                    public void onError(String message, int code) {
-//
-//                    }
-//
-//                    @Override
-//                    public void cancle() {
-//
-//                    }
-//
-//                    @Override
-//                    public void onSuccess(List<NumberBean> list) {
-//
-//                    }
-//
-//                    @Override
-//                    public List<NumberBean> convert(JsonElement result) {
-//                        return null;
-//                    }
-//                });
-
-        OkHttpClient.Builder builder = new OkHttpClient.Builder();
-
-
         Retrofit retrofit = new Retrofit.Builder()
                 .baseUrl(ApiGet.APIGET)
                 .addConverterFactory(GsonConverterFactory.create())
                 .addCallAdapterFactory(RxJava2CallAdapterFactory.create())
                 .build();
         ApiGet apiGet = retrofit.create(ApiGet.class);
-        apiGet.getApi("numCount/" + numCount + "/radius/" + radius + "/maxX/" + width + "/maxY/" + height,"zh-CN")
+        apiGet.getApi("numCount/" + numCount + "/radius/" + radius + "/maxX/" + width + "/maxY/" + height)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(new Observer<NumberBean>() {
@@ -151,6 +122,10 @@ public class DrawActivity extends AppCompatActivity {
                         if (numberBean!=null&&numberBean.getError_code()==0) {
                             List<NumberBean.DataBean> data = numberBean.getData();
                             lists.addAll(data);
+                            for (NumberBean.DataBean bean : lists) {
+                                setCode(bean);
+                                list1.add(bean.getNum());
+                            }
                         }
 
                         Log.e(TAG, "onNext: " + numberBean.toString());
@@ -169,14 +144,11 @@ public class DrawActivity extends AppCompatActivity {
 
 
         list1 = new ArrayList<>();
-        for (NumberBean.DataBean bean : lists) {
-            setCode(bean);
-            list1.add(bean.getNum());
-        }
+
         Log.e(TAG, "initData: 111"+list1.size() );
     }
 
-    private void setCode(final NumberBean.DataBean bean) {
+    private void setCode(NumberBean.DataBean bean) {
         int code = bean.getNum();
         switch (bean.getShape()) {
             case 3: //三角形
