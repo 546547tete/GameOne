@@ -12,6 +12,7 @@ import android.widget.TextView;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.example.bean.ApiGet;
+import com.example.bean.NumBerDateBean;
 import com.example.bean.NumberBean;
 import com.example.customview.MyCircle;
 import com.example.customview.MyPolygon;
@@ -20,9 +21,11 @@ import com.example.customview.MyTriangle;
 import com.example.httplibrary.callback.HttpCallBack;
 import com.example.httplibrary.client.HttpClient;
 import com.example.httplibrary.server.ApiService;
+import com.example.httplibrary.utils.LogUtils;
 import com.google.gson.JsonElement;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Timer;
 import java.util.TimerTask;
@@ -96,11 +99,15 @@ public class DrawActivity extends AppCompatActivity {
     }
 
     private void initData() {
+        list1 = new ArrayList<>();
 
         Display defaultDisplay = getWindowManager().getDefaultDisplay();
         int width = defaultDisplay.getWidth();
         int height = defaultDisplay.getHeight();
-        int radius = height / (numCount * 2);
+//        int radius = height / (numCount * 2);
+        int radius = 50;
+
+
 
         Retrofit retrofit = new Retrofit.Builder()
                 .baseUrl(ApiGet.APIGET)
@@ -123,8 +130,8 @@ public class DrawActivity extends AppCompatActivity {
                             List<NumberBean.DataBean> data = numberBean.getData();
                             lists.addAll(data);
                             for (NumberBean.DataBean bean : lists) {
-                                setCode(bean);
                                 list1.add(bean.getNum());
+                                setCode(bean);
                             }
                         }
 
@@ -143,9 +150,7 @@ public class DrawActivity extends AppCompatActivity {
                 });
 
 
-        list1 = new ArrayList<>();
-
-        Log.e(TAG, "initData: 111"+list1.size() );
+        Log.e(TAG, "initData:"+list1.size() );
     }
 
     private void setCode(NumberBean.DataBean bean) {

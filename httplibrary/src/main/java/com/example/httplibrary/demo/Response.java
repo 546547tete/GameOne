@@ -3,8 +3,8 @@ package com.example.httplibrary.demo;
 import com.google.gson.JsonElement;
 public class Response {
     private JsonElement data;
-    private int errorCode;
-    private String errorMsg;
+    private int error_code;
+    private String error_msg;
 
     public JsonElement getData() {
         return data;
@@ -15,18 +15,18 @@ public class Response {
     }
 
     public int getErrorCode() {
-        return errorCode;
+        return error_code;
     }
 
     public void setErrorCode(int errorCode) {
-        this.errorCode = errorCode;
+        this.error_code = errorCode;
     }
 
     public String getErrorMsg() {
-        return errorMsg;
+        return error_msg;
     }
 
     public void setErrorMsg(String errorMsg) {
-        this.errorMsg = errorMsg;
+        this.error_msg = errorMsg;
     }
 }
