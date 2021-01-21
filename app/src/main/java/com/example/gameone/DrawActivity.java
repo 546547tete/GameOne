@@ -1,5 +1,6 @@
 package com.example.gameone;
 
+import android.graphics.Canvas;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.util.Log;
@@ -8,6 +9,7 @@ import android.view.Gravity;
 import android.view.View;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 
@@ -53,12 +55,16 @@ public class DrawActivity extends AppCompatActivity {
     private int timerCode = 50;
     private Timer timer;
     private List<Integer> list1;
-    private MyPolygon myPolygon;
+    //    private MyPolygon myPolygon;
+//    private MyPolygon myPolygon7;
+    private MyPolygon myPolygon71;
     private MyPolygon myPolygon1;
     private TextView tv_time;
 
     //参数
     private int numCount = 3;
+    private MaoPao maoPao;
+    private int[] arr;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -70,9 +76,12 @@ public class DrawActivity extends AppCompatActivity {
     }
 
     private void initView() {
+        maoPao = new MaoPao();
+
         mLayoutRl = (RelativeLayout) findViewById(R.id.rl_layout);
         tv_time = findViewById(R.id.tv_time);
         lists = new ArrayList<>();
+        list1 = new ArrayList<>();
         /**
          * 倒计时
          */
@@ -99,7 +108,6 @@ public class DrawActivity extends AppCompatActivity {
     }
 
     private void initData() {
-        list1 = new ArrayList<>();
 
         Display defaultDisplay = getWindowManager().getDefaultDisplay();
         int width = defaultDisplay.getWidth();
@@ -108,7 +116,33 @@ public class DrawActivity extends AppCompatActivity {
         int radius = 50;
 
 
+//        setNetWorkData(width, height, radius);
 
+        lists.add(new NumberBean.DataBean(40, "00FF00", 6, 300, 100, 50));
+        lists.add(new NumberBean.DataBean(50, "0000FF", 4, 500, 500, 50));
+        lists.add(new NumberBean.DataBean(30, "FF0000", 8, 100, 100, 50));
+        lists.add(new NumberBean.DataBean(60, "0000FF", 4, 800, 1500, 50));
+        lists.add(new NumberBean.DataBean(70, "0000FF", 7, 500, 800, 50));
+        lists.add(new NumberBean.DataBean(80, "FFFF00", 3, 500, 900, 50));
+        lists.add(new NumberBean.DataBean(90, "0000FF", 5, 500, 1000, 50));
+        lists.add(new NumberBean.DataBean(99, "00FF00", 8, 600, 1000, 50));
+
+        arr = new int[lists.size()];
+        for (NumberBean.DataBean list : lists) {
+            setCode(list);
+            list1.add(list.getNum());
+            Log.e(TAG, "initData: " + list.getNum());
+        }
+
+        for (int i = 0; i < lists.size(); i++) {
+//            setCode(lists.get(i));
+            arr[i] = lists.get(i).getNum();
+        }
+
+        Log.e(TAG, "initData:" + list1.size());
+    }
+
+    private void setNetWorkData(int width, int height, int radius) {
         Retrofit retrofit = new Retrofit.Builder()
                 .baseUrl(ApiGet.APIGET)
                 .addConverterFactory(GsonConverterFactory.create())
@@ -126,7 +160,7 @@ public class DrawActivity extends AppCompatActivity {
 
                     @Override
                     public void onNext(NumberBean numberBean) {
-                        if (numberBean!=null&&numberBean.getError_code()==0) {
+                        if (numberBean != null && numberBean.getError_code() == 0) {
                             List<NumberBean.DataBean> data = numberBean.getData();
                             lists.addAll(data);
                             for (NumberBean.DataBean bean : lists) {
@@ -140,7 +174,7 @@ public class DrawActivity extends AppCompatActivity {
 
                     @Override
                     public void onError(Throwable e) {
-                        Log.e(TAG, "onError: "+e.getMessage() );
+                        Log.e(TAG, "onError: " + e.getMessage());
                     }
 
                     @Override
@@ -148,9 +182,6 @@ public class DrawActivity extends AppCompatActivity {
 
                     }
                 });
-
-
-        Log.e(TAG, "initData:"+list1.size() );
     }
 
     private void setCode(NumberBean.DataBean bean) {
@@ -169,52 +200,12 @@ public class DrawActivity extends AppCompatActivity {
                 textView1.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
+                        Toast.makeText(DrawActivity.this, "333", Toast.LENGTH_SHORT).show();
+
                         String trim = textView1.getText().toString().trim();
                         int parseInt = Integer.parseInt(trim);
-                        int number_i, number_j = 0,post = 0;
-                        //循环判断出来最小的数字
-                        for (int i = 0; i < list1.size(); i++) {
-                            for (int j = 0; j < list1.size() - i; j++) {
-                                number_i = list1.get(j);
-                                number_j = list1.get(j + i);
-                                if (number_i < number_j) {
-                                    int num = number_i;
-                                    number_i = number_j;
-                                    number_j = num;
-                                    post = j;
-                                }
-                            }
-                        }
-                        /**
-                         * 如果点击的数字是最小的，那么就消失
-                         */
-                        if (number_j == parseInt) {
-//                            list1.remove(list1.get(j + 1));
-                            mLayoutRl.removeView(myTriangle);
-                            textView1.setVisibility(View.GONE);
-//                            lists.remove(i);
-//                                            initData(lists);
-                            Log.e("tag", "onClick: 1==" + number_j + "parseInt" + parseInt);
-                        }
-                    }
-                });
-                break;
-            case 4: //圆
-                final MyCircle myCircle = new MyCircle(this, null);
-                mLayoutRl.addView(myCircle);
-                myCircle.setData(bean);
-                final TextView textView2 = new TextView(this);
-                codeText(textView2, bean);
-
-                /**
-                 * 监听点击事件
-                 */
-                textView2.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-                        String trim = textView2.getText().toString().trim();
-                        int parseInt = Integer.parseInt(trim);
                         int number_i, number_j = 0, post = 0;
+//                        maoPao.SmallAndBig(arr);
                         //循环判断出来最小的数字
                         for (int i = 0; i < list1.size(); i++) {
                             for (int j = 0; j < list1.size() - i; j++) {
@@ -225,7 +216,6 @@ public class DrawActivity extends AppCompatActivity {
                                     number_i = number_j;
                                     number_j = num;
                                     post = j;
-                                    Log.e("tag", "onClick: yuan==" + number_j + "parseInt" + parseInt);
                                 }
                             }
                         }
@@ -234,20 +224,21 @@ public class DrawActivity extends AppCompatActivity {
                          */
                         if (number_j == parseInt) {
                             for (int i = 0; i < list1.size(); i++) {
-                                if (number_j==list1.get(i)){
+                                if (number_j == list1.get(i)) {
                                     list1.remove(i);
                                 }
                             }
-                            mLayoutRl.removeView(myCircle);
-                            mLayoutRl.removeView(textView2);
+                            mLayoutRl.removeView(textView1);
+                            mLayoutRl.removeView(myTriangle);
 //                            lists.remove(i);
 //                                            initData(lists);
-                            Log.e("tag", "onClick: 2==" + number_j + "parseInt" + parseInt);
+                            Log.e("tag", "onClick: 1==" + number_j + "parseInt" + parseInt);
                         }
                     }
                 });
                 break;
-            case 5: //四边形
+            case 4: //四方
+
                 final MyQuadrilateral myQuadrilateral = new MyQuadrilateral(this, null);
                 mLayoutRl.addView(myQuadrilateral);
                 myQuadrilateral.setData(bean);
@@ -260,6 +251,8 @@ public class DrawActivity extends AppCompatActivity {
                 textView3.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
+                        Toast.makeText(DrawActivity.this, "4444", Toast.LENGTH_SHORT).show();
+
                         String trim = textView3.getText().toString().trim();
                         int parseInt = Integer.parseInt(trim);
                         int number_i, number_j = 0, post = 0;
@@ -282,12 +275,13 @@ public class DrawActivity extends AppCompatActivity {
                          */
                         if (number_j == parseInt) {
                             for (int i = 0; i < list1.size(); i++) {
-                                if (number_j==list1.get(i)){
+                                if (number_j == list1.get(i)) {
                                     list1.remove(i);
                                 }
                             }
                             mLayoutRl.removeView(myQuadrilateral);
-                            textView3.setVisibility(View.GONE);
+                            mLayoutRl.removeView(textView3);
+//                            textView3.setVisibility(View.GONE);
 //                                        lists.remove(i);
 //                                            initData(lists);
                             Log.e("tag", "onClick: 3==" + number_j + "parseInt" + parseInt + "post" + post);
@@ -295,108 +289,272 @@ public class DrawActivity extends AppCompatActivity {
                     }
                 });
                 break;
-            case 6: //多边形
-                if (myPolygon == null) {
-                    myPolygon = new MyPolygon(this, null);
-                    mLayoutRl.addView(myPolygon);
-                    myPolygon.setData(bean);
-                    final TextView textView4 = new TextView(this);
-                    codeText(textView4, bean);
-                    /**
-                     * 监听点击事件
-                     */
-                    textView4.setOnClickListener(new View.OnClickListener() {
-                        @Override
-                        public void onClick(View v) {
-                            String trim = textView4.getText().toString().trim();
-                            int parseInt = Integer.parseInt(trim);
-                            int number_i, number_j = 0, post = 0;
-                            //循环判断出来最小的数字
-                            for (int i = 0; i < list1.size(); i++) {
-                                for (int j = 0; j < list1.size() - i; j++) {
-                                    number_i = list1.get(j);
-                                    number_j = list1.get(j + i);
-                                    if (number_i < number_j) {
-                                        int temp = number_i;
-                                        number_i = number_j;
-                                        number_j = temp;
-                                        post = j;
+            case 5: //圆
+                ///////////////////////////////////
 
-                                    }
+                final MyCircle myCircle = new MyCircle(this, null);
+                mLayoutRl.addView(myCircle);
+                myCircle.setData(bean);
+                final TextView textView5 = new TextView(this);
+                codeText(textView5, bean);
+
+                /**
+                 * 监听点击事件
+                 */
+                textView5.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        Toast.makeText(DrawActivity.this, "555", Toast.LENGTH_SHORT).show();
+
+                        String trim = textView5.getText().toString().trim();
+                        int parseInt = Integer.parseInt(trim);
+                        int number_i, number_j = 0, post = 0;
+                        //循环判断出来最小的数字
+                        for (int i = 0; i < list1.size(); i++) {
+                            for (int j = 0; j < list1.size() - i; j++) {
+                                number_i = list1.get(j);
+                                number_j = list1.get(j + i);
+                                if (number_i < number_j) {
+                                    int num = number_i;
+                                    number_i = number_j;
+                                    number_j = num;
+                                    post = j;
+
+                                }
+                            }
+                        }
+                        /**
+                         * 如果点击的数字是最小的，那么就消失
+                         */
+                        if (number_j == parseInt) {
+                            for (int i = 0; i < list1.size(); i++) {
+                                if (number_j == list1.get(i)) {
+                                    list1.remove(i);
                                 }
                             }
 
-                            /**
-                             * 如果点击的数字是最小的，那么就消失
-                             */
-                            if (number_j == parseInt) {
-                                for (int i = 0; i < list1.size(); i++) {
-                                    if (number_j==list1.get(i)){
-                                        list1.remove(i);
-                                    }
+                            mLayoutRl.removeView(myCircle);
+                            mLayoutRl.removeView(textView5);
+//                            textView3.setVisibility(View.GONE);
+//                                        lists.remove(i);
+//                                            initData(lists);
+                            Log.e("tag", "onClick: 3==" + number_j + "parseInt" + parseInt + "post" + post);
+                        }
+                    }
+                });
+
+                break;
+            case 6: //6边形
+
+//                if (myPolygon == null) {
+                final MyPolygon myPolygon = new MyPolygon(this, null);
+                mLayoutRl.addView(myPolygon);
+                myPolygon.setData(bean);
+                final TextView textView6 = new TextView(this);
+                codeText(textView6, bean);
+                /**
+                 * 监听点击事件
+                 */
+                textView6.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        Toast.makeText(DrawActivity.this, "666666", Toast.LENGTH_SHORT).show();
+
+                        String trim = textView6.getText().toString().trim();
+                        int parseInt = Integer.parseInt(trim);
+                        int number_i, number_j = 0, post = 0;
+                        //循环判断出来最小的数字
+                        for (int i = 0; i < list1.size(); i++) {
+                            for (int j = 0; j < list1.size() - i; j++) {
+                                number_i = list1.get(j);
+                                number_j = list1.get(j + i);
+                                if (number_i < number_j) {
+                                    int temp = number_i;
+                                    number_i = number_j;
+                                    number_j = temp;
+                                    post = j;
+
                                 }
-                                mLayoutRl.removeView(myPolygon);
-                                mLayoutRl.removeView(textView4);
+                            }
+                        }
+
+                        /**
+                         * 如果点击的数字是最小的，那么就消失
+                         */
+                        if (number_j == parseInt) {
+                            for (int i = 0; i < list1.size(); i++) {
+                                if (number_j == list1.get(i)) {
+                                    list1.remove(i);
+                                }
+                            }
+                            mLayoutRl.removeView(myPolygon);
+                            mLayoutRl.removeView(textView6);
 //                                            textView4.setVisibility(View.GONE);
 //                                            lists.remove(i);
 //                                            initData(lists);
-                                Log.e("tag", "onClick: " + number_j + "parseInt" + parseInt + "post" + post);
+                            Log.e("tag", "onClick: " + number_j + "parseInt" + parseInt + "post" + post);
+                        }
+                    }
+                });
+//                } else {
+//                    myPolygon1 = new MyPolygon(this, null);
+//                    mLayoutRl.addView(myPolygon1);
+//                    myPolygon1.setData(bean);
+//                    final TextView textView42 = new TextView(this);
+//                    codeText(textView42, bean);
+//                    /**
+//                     * 监听点击事件
+//                     */
+//                    textView42.setOnClickListener(new View.OnClickListener() {
+//                        @Override
+//                        public void onClick(View v) {
+//                            String trim = textView42.getText().toString().trim();
+//                            int parseInt = Integer.parseInt(trim);
+//                            int number_i, number_j = 0, post = 0;
+//                            //循环判断出来最小的数字
+//                            for (int i = 0; i < list1.size(); i++) {
+//                                for (int j = 0; j < list1.size() - i; j++) {
+//                                    number_i = list1.get(j);
+//                                    number_j = list1.get(j + i);
+//                                    if (number_i < number_j) {
+//                                        int num = number_i;
+//                                        number_i = number_j;
+//                                        number_j = num;
+//                                        post = j;
+//                                    }
+//                                }
+//                            }
+//                            /**
+//                             * 如果点击的数字是最小的，那么就消失
+//                             */
+//                            if (number_j == parseInt) {
+//                                for (int i = 0; i < list1.size(); i++) {
+//                                    if (number_j==list1.get(i)){
+//                                        list1.remove(i);
+//                                    }
+//                                }
+//                                mLayoutRl.removeView(myPolygon1);
+//                                mLayoutRl.removeView(textView42);
+//                                Toast.makeText(DrawActivity.this, "666666", Toast.LENGTH_SHORT).show();
+//
+////                                            textView42.setVisibility(View.GONE);
+////                                            lists.remove(i);
+////                                            initData(lists);
+//                                Log.e("tag", "onClick: " + number_j + "parseInt" + parseInt + "post" + number_j);
+//                            }
+//                        }
+//                    });
+//                }
+                break;
+            case 7:
+
+                final MyPolygon myPolygon7 = new MyPolygon(this, null);
+                mLayoutRl.addView(myPolygon7);
+                myPolygon7.setData(bean);
+                final TextView textView7 = new TextView(this);
+                codeText(textView7, bean);
+                /**
+                 * 监听点击事件
+                 */
+                textView7.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        Toast.makeText(DrawActivity.this, "7777", Toast.LENGTH_SHORT).show();
+
+                        String trim = textView7.getText().toString().trim();
+                        int parseInt = Integer.parseInt(trim);
+                        int number_i, number_j = 0, post = 0;
+                        //循环判断出来最小的数字
+                        for (int i = 0; i < list1.size(); i++) {
+                            for (int j = 0; j < list1.size() - i; j++) {
+                                number_i = list1.get(j);
+                                number_j = list1.get(j + i);
+                                if (number_i < number_j) {
+                                    int temp = number_i;
+                                    number_i = number_j;
+                                    number_j = temp;
+                                    post = j;
+
+                                }
                             }
                         }
-                    });
-                } else {
-                    myPolygon1 = new MyPolygon(this, null);
-                    mLayoutRl.addView(myPolygon1);
-                    myPolygon1.setData(bean);
-                    final TextView textView42 = new TextView(this);
-                    codeText(textView42, bean);
-                    /**
-                     * 监听点击事件
-                     */
-                    textView42.setOnClickListener(new View.OnClickListener() {
-                        @Override
-                        public void onClick(View v) {
-                            String trim = textView42.getText().toString().trim();
-                            int parseInt = Integer.parseInt(trim);
-                            int number_i, number_j = 0, post = 0;
-                            //循环判断出来最小的数字
+
+                        /**
+                         * 如果点击的数字是最小的，那么就消失
+                         */
+                        if (number_j == parseInt) {
                             for (int i = 0; i < list1.size(); i++) {
-                                for (int j = 0; j < list1.size() - i; j++) {
-                                    number_i = list1.get(j);
-                                    number_j = list1.get(j + i);
-                                    if (number_i < number_j) {
-                                        int num = number_i;
-                                        number_i = number_j;
-                                        number_j = num;
-                                        post = j;
-                                    }
+                                if (number_j == list1.get(i)) {
+                                    list1.remove(i);
                                 }
                             }
-                            /**
-                             * 如果点击的数字是最小的，那么就消失
-                             */
-                            if (number_j == parseInt) {
-                                for (int i = 0; i < list1.size(); i++) {
-                                    if (number_j==list1.get(i)){
-                                        list1.remove(i);
-                                    }
-                                }
-                                mLayoutRl.removeView(myPolygon1);
-                                mLayoutRl.removeView(textView42);
-//                                            textView42.setVisibility(View.GONE);
+                            mLayoutRl.removeView(myPolygon7);
+                            mLayoutRl.removeView(textView7);
+
+//                                            textView4.setVisibility(View.GONE);
 //                                            lists.remove(i);
 //                                            initData(lists);
-                                Log.e("tag", "onClick: " + number_j + "parseInt" + parseInt + "post" + number_j);
+                            Log.e("tag", "onClick: " + number_j + "parseInt" + parseInt + "post" + post);
+                        }
+                    }
+                });
+                break;
+            case 8:
+
+                final MyCircle myCircle8 = new MyCircle(this, null);
+                mLayoutRl.addView(myCircle8);
+                myCircle8.setData(bean);
+                final TextView textView82 = new TextView(this);
+                codeText(textView82, bean);
+
+                /**
+                 * 监听点击事件
+                 */
+                textView82.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        Toast.makeText(DrawActivity.this, "8888", Toast.LENGTH_SHORT).show();
+
+                        String trim = textView82.getText().toString().trim();
+                        int parseInt = Integer.parseInt(trim);
+                        int number_i, number_j = 0, post = 0;
+                        //循环判断出来最小的数字
+                        for (int i = 0; i < list1.size(); i++) {
+                            for (int j = 0; j < list1.size() - i; j++) {
+                                number_i = list1.get(j);
+                                number_j = list1.get(j + i);
+                                if (number_i < number_j) {
+                                    int num = number_i;
+                                    number_i = number_j;
+                                    number_j = num;
+                                    post = j;
+                                    Log.e("tag", "onClick: yuan==" + number_j + "parseInt" + parseInt);
+                                }
                             }
                         }
-                    });
-                }
+                        /**
+                         * 如果点击的数字是最小的，那么就消失
+                         */
+                        if (number_j == parseInt) {
+                            for (int i = 0; i < list1.size(); i++) {
+                                if (number_j == list1.get(i)) {
+                                    list1.remove(i);
+                                }
+                            }
+                            mLayoutRl.removeView(myCircle8);
+                            mLayoutRl.removeView(textView82);
+
+//                            lists.remove(i);
+//                                            initData(lists);
+                            Log.e("tag", "onClick: 2==" + number_j + "parseInt" + parseInt);
+                        }
+                    }
+                });
                 break;
         }
 
 
     }
-
 
 
     /**
@@ -411,17 +569,17 @@ public class DrawActivity extends AppCompatActivity {
         int place_y = numberBean.getY();
         /**
          * 动态创建TextView
-         * 添加到界面
+         * 添加到界面3
          * 动态设置文字
          */
-
+        Log.e(TAG, "codeText: ");
         mLayoutRl.addView(textView);
         RelativeLayout.LayoutParams params = (RelativeLayout.LayoutParams) textView.getLayoutParams();
         params.height = radius;
         params.width = radius;
 //        params.setMargins(500-25,500-60,0,0);
         //设置位置
-        params.setMargins(place_x - radius / 2, place_y - radius / 2 - 10, 0, 0);
+        params.setMargins(place_x - radius / 2, place_y - radius / 3, 0, 0);
         textView.setLayoutParams(params);
         textView.setText(number + "");
         //文字大小
@@ -436,4 +594,5 @@ public class DrawActivity extends AppCompatActivity {
         timerCode = 0;
         timer = null;
     }
+
 }

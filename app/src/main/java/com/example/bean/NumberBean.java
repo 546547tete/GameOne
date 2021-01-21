@@ -40,6 +40,15 @@ public class NumberBean {
     }
 
     public static class DataBean {
+        public DataBean(int num, String color, int shape, int x, int y, int radius) {
+            this.num = num;
+            this.color = color;
+            this.shape = shape;
+            this.x = x;
+            this.y = y;
+            this.radius = radius;
+        }
+
         /**
          * num : 77
          * color : FF7F00

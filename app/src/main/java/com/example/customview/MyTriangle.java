@@ -6,11 +6,13 @@ import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.Path;
 import android.util.AttributeSet;
+import android.util.Log;
 import android.view.View;
 
 import androidx.annotation.Nullable;
 
 import com.example.bean.NumberBean;
+import com.example.gameone.R;
 
 public class MyTriangle extends View {
 
@@ -19,17 +21,36 @@ public class MyTriangle extends View {
     private int x1,y1;
     private int x2,y2;
     private int x3,y3;
-    private int color = Color.WHITE;
+    private int color = getResources().getColor(R.color.color_00FF00);
+
+    int[] colors = {R.color.color_FF0000,
+            R.color.color_FF7F00,
+            R.color.color_FFFF00,
+            R.color.color_00FF00,
+            R.color.color_0000FF,
+            R.color.color_2E2B5F,
+            R.color.color_8B00FF
+    };
+
+    String[] colorStr = {"FF0000",
+            "FF7F00",
+            "FFFF00",
+            "00FF00",
+            "0000FF",
+            "2E2B5F",
+            "8B00FF"
+    };
+
     public MyTriangle(Context context, @Nullable AttributeSet attrs) {
         super(context, attrs);
-        paint = new Paint();
-        paint.setColor(Color.GREEN);
+
     }
 
     @Override
     protected void onDraw(Canvas canvas) {
         path = new Path();
-
+        paint = new Paint();
+        paint.setColor(color);
         path.moveTo(x1,y1);
         path.lineTo(x1,y1);
         path.lineTo(x2,y2);
@@ -40,7 +61,17 @@ public class MyTriangle extends View {
     }
 
     public void setData(NumberBean.DataBean numberBean){
-        int radius = numberBean.getNum();
+
+        String color = numberBean.getColor();
+        for (int k = 0; k < colorStr.length-1; k++) {
+            if (colorStr[k].equals(color)){
+                this.color = getResources().getColor(colors[k]);
+            }
+        }
+
+//        this.color = getResources().getColor(R.color.color_0000FF);
+
+        int radius = numberBean.getRadius();
         int place_x = numberBean.getX();
         int place_y = numberBean.getY();
         int i = radius * radius;
