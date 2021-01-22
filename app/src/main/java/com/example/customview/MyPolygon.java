@@ -76,7 +76,7 @@ public class MyPolygon extends View {
 
         int radius = numberBean.getRadius();
         int place_x = numberBean.getX();
-        int place_y = numberBean.getY();
+        int place_y = numberBean.getY()+100;
         int i1 = radius / 2;
         int a1 = radius * radius;
         int a2 = i1 * i1;

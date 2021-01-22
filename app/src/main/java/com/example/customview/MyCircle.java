@@ -64,7 +64,7 @@ public class MyCircle extends View {
 //        canvas.drawCircle(x,y,radius,paint);
         this.radius = numberBean.getRadius();
         this.x = numberBean.getX();
-        this.y = numberBean.getY();
+        this.y = numberBean.getY()+100;
 
 
     }

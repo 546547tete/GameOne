@@ -73,7 +73,7 @@ public class MyTriangle extends View {
 
         int radius = numberBean.getRadius();
         int place_x = numberBean.getX();
-        int place_y = numberBean.getY();
+        int place_y = numberBean.getY()+100;
         int i = radius * radius;
         int i1 = radius / 2;
         int i2 = i1 * i1;

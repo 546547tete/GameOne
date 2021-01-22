@@ -73,7 +73,7 @@ public class MyQuadrilateral extends View {
 
         int radius = numberBean.getRadius();
         int place_x = numberBean.getX();
-        int place_y = numberBean.getY();
+        int place_y = numberBean.getY()+100;
         int a1 = radius * radius;
         int a2 = radius * radius;
         int a3 = a1 + a2;

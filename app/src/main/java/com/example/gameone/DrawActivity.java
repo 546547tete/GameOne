@@ -1,5 +1,6 @@
 package com.example.gameone;
 
+import android.content.Intent;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.os.Bundle;
@@ -7,6 +8,7 @@ import android.util.Log;
 import android.view.Display;
 import android.view.Gravity;
 import android.view.View;
+import android.widget.Button;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -55,22 +57,22 @@ public class DrawActivity extends AppCompatActivity {
     private int timerCode = 50;
     private Timer timer;
     private List<Integer> list1;
-    //    private MyPolygon myPolygon;
-//    private MyPolygon myPolygon7;
-    private MyPolygon myPolygon71;
-    private MyPolygon myPolygon1;
     private TextView tv_time;
+    private TextView tv_guan;
 
     //参数
-    private int numCount = 3;
+    private int numCount = 1;
     private MaoPao maoPao;
     private int[] arr;
     private NumberBean.DataBean[] arr1;
+    private Intent intent;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_draw);
+        timerCode = getIntent().getIntExtra("time", 0);
+        numCount = getIntent().getIntExtra("code", 0);
         initView();
         initData();
 
@@ -78,12 +80,13 @@ public class DrawActivity extends AppCompatActivity {
 
     private void initView() {
         maoPao = new MaoPao();
-
         mLayoutRl = (RelativeLayout) findViewById(R.id.rl_layout);
         tv_time = findViewById(R.id.tv_time);
+        tv_guan = findViewById(R.id.tv_guan);
         lists = new ArrayList<>();
         list1 = new ArrayList<>();
 
+        tv_guan.setText("第"+numCount+"关");
         /**
          * 倒计时
          */
@@ -97,6 +100,11 @@ public class DrawActivity extends AppCompatActivity {
                     public void run() {
                         tv_time.setText("倒计时：" + timerCode);
                         if (timerCode == 0) {
+                            intent = getIntent();
+                            if (lists.size() > 0) {
+                                intent.putExtra("type", "闯关失败");
+                            }
+                            setResult(300, intent);
                             finish();
                         }
                         timerCode--;
@@ -111,15 +119,26 @@ public class DrawActivity extends AppCompatActivity {
 
     private void initData() {
 
+
         Display defaultDisplay = getWindowManager().getDefaultDisplay();
         int width = defaultDisplay.getWidth();
         int height = defaultDisplay.getHeight();
-//        int radius = height / (numCount * 2);
-        int radius = 50;
+        int radius;
+        int num = numCount*2+1;
+        if (numCount<2){
+            radius = height / (num * 6);
+        } else if (numCount<4){
+            radius = height / (num * 4);
+        } else if (numCount<6){
+            radius = height / (num * 3);
+        } else {
+            radius = height / (num * 2);
+        }
+//        int radius = 50;
 
 
-        setNetWorkData(width, height, radius);
-//
+        setNetWorkData(num,width, height-100, radius);
+
 //        lists.add(new NumberBean.DataBean(60, "0000FF", 8, 800, 1500, 50));
 //        lists.add(new NumberBean.DataBean(59, "FF0000", 6, 100, 100, 50));
 //        lists.add(new NumberBean.DataBean(50, "0000FF", 4, 500, 500, 50));
@@ -129,26 +148,26 @@ public class DrawActivity extends AppCompatActivity {
 //        lists.add(new NumberBean.DataBean(35, "00FF00", 4, 300, 100, 50));
 //        lists.add(new NumberBean.DataBean(99, "00FF00", 5, 600, 1000, 50));
 
-
-        for (NumberBean.DataBean list : lists) {
-            setCode(list);
-            list1.add(list.getNum());
-
-            Log.e(TAG, "initData: " + list.getNum());
-        }
-        for (int i = 0; i < lists.size(); i++) {
-            arr1[i] = lists.get(i);
-        }
+//        arr1 = new NumberBean.DataBean[lists.size()];
+//        for (NumberBean.DataBean list : lists) {
+//            setCode(list);
+//            list1.add(list.getNum());
+//
+//            Log.e(TAG, "initData: " + list.getNum());
+//        }
+//        for (int i = 0; i < lists.size(); i++) {
+//            arr1[i] = lists.get(i);
+//        }
     }
 
-    private void setNetWorkData(int width, int height, int radius) {
+    private void setNetWorkData(int num,int width, int height, int radius) {
         Retrofit retrofit = new Retrofit.Builder()
                 .baseUrl(ApiGet.APIGET)
                 .addConverterFactory(GsonConverterFactory.create())
                 .addCallAdapterFactory(RxJava2CallAdapterFactory.create())
                 .build();
         ApiGet apiGet = retrofit.create(ApiGet.class);
-        apiGet.getApi("numCount/" + numCount + "/radius/" + radius + "/width/" + width + "/height/" + height)
+        apiGet.getApi("numCount/" + num + "/radius/" + radius + "/width/" + width + "/height/" + height)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(new Observer<NumberBean>() {
@@ -188,7 +207,6 @@ public class DrawActivity extends AppCompatActivity {
     }
 
     private void setCode(NumberBean.DataBean bean) {
-        int code = bean.getNum();
         switch (bean.getShape()) {
             case 3: //三角形
                 final MyTriangle myTriangle = new MyTriangle(this, null);
@@ -211,10 +229,13 @@ public class DrawActivity extends AppCompatActivity {
                          * 如果点击的数字是最小的，那么就消失
                          */
                         if (arr1[0].getNum() == parseInt) {
+                            NumberBean.DataBean dataBean = arr1[0];
                             arr1[0] = new NumberBean.DataBean(999, "", 3, 0, 0, 0);
+                            lists.remove(dataBean);
                             mLayoutRl.removeView(textView1);
                             mLayoutRl.removeView(myTriangle);
                         }
+                        finishMain(lists);
                     }
                 });
                 break;
@@ -240,10 +261,13 @@ public class DrawActivity extends AppCompatActivity {
                          * 如果点击的数字是最小的，那么就消失
                          */
                         if (arr1[0].getNum() == parseInt) {
+                            NumberBean.DataBean dataBean = arr1[0];
                             arr1[0] = new NumberBean.DataBean(999, "", 3, 0, 0, 0);
+                            lists.remove(dataBean);
                             mLayoutRl.removeView(myQuadrilateral);
                             mLayoutRl.removeView(textView3);
                         }
+                        finishMain(lists);
                     }
                 });
                 break;
@@ -267,10 +291,13 @@ public class DrawActivity extends AppCompatActivity {
                          * 如果点击的数字是最小的，那么就消失
                          */
                         if (arr1[0].getNum() == parseInt) {
+                            NumberBean.DataBean dataBean = arr1[0];
                             arr1[0] = new NumberBean.DataBean(999, "", 3, 0, 0, 0);
+                            lists.remove(dataBean);
                             mLayoutRl.removeView(myCircle);
                             mLayoutRl.removeView(textView5);
                         }
+                        finishMain(lists);
                     }
                 });
                 break;
@@ -294,10 +321,13 @@ public class DrawActivity extends AppCompatActivity {
                          * 如果点击的数字是最小的，那么就消失
                          */
                         if (arr1[0].getNum() == parseInt) {
+                            NumberBean.DataBean dataBean = arr1[0];
                             arr1[0] = new NumberBean.DataBean(999, "", 3, 0, 0, 0);
+                            lists.remove(dataBean);
                             mLayoutRl.removeView(myPolygon);
                             mLayoutRl.removeView(textView6);
                         }
+                        finishMain(lists);
                     }
                 });
                 break;
@@ -321,10 +351,13 @@ public class DrawActivity extends AppCompatActivity {
                          * 如果点击的数字是最小的，那么就消失
                          */
                         if (arr1[0].getNum() == parseInt) {
+                            NumberBean.DataBean dataBean = arr1[0];
                             arr1[0] = new NumberBean.DataBean(999, "", 3, 0, 0, 0);
+                            lists.remove(dataBean);
                             mLayoutRl.removeView(myPolygon7);
                             mLayoutRl.removeView(textView7);
                         }
+                        finishMain(lists);
                     }
                 });
                 break;
@@ -350,13 +383,26 @@ public class DrawActivity extends AppCompatActivity {
                          * 如果点击的数字是最小的，那么就消失
                          */
                         if (arr1[0].getNum() == parseInt) {
+                            NumberBean.DataBean dataBean = arr1[0];
                             arr1[0] = new NumberBean.DataBean(999, "", 3, 0, 0, 0);
+                            lists.remove(dataBean);
                             mLayoutRl.removeView(myCircle8);
                             mLayoutRl.removeView(textView82);
                         }
+                        finishMain(lists);
                     }
                 });
                 break;
+        }
+
+    }
+
+    private void finishMain(ArrayList<NumberBean.DataBean> lists) {
+        if (lists.size()<=0){
+            Intent intent = getIntent();
+            intent.putExtra("type","闯关成功");
+            setResult(300, intent);
+            finish();
         }
     }
 
@@ -370,7 +416,7 @@ public class DrawActivity extends AppCompatActivity {
         int number = numberBean.getNum();
         int radius = numberBean.getRadius();
         int place_x = numberBean.getX();
-        int place_y = numberBean.getY();
+        int place_y = numberBean.getY()+100;
         /**
          * 动态创建TextView
          * 添加到界面3
@@ -387,8 +433,8 @@ public class DrawActivity extends AppCompatActivity {
         textView.setLayoutParams(params);
         textView.setText(number + "");
         //文字大小
-        textView.setTextSize(radius / 3);
-        textView.setGravity(Gravity.CENTER);
+        textView.setTextSize(radius / 4);
+        textView.setGravity(Gravity.CENTER_HORIZONTAL);
         textView.setTextColor(Color.WHITE);
     }
 
