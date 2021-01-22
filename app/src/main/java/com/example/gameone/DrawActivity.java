@@ -83,6 +83,7 @@ public class DrawActivity extends AppCompatActivity {
         tv_time = findViewById(R.id.tv_time);
         lists = new ArrayList<>();
         list1 = new ArrayList<>();
+
         /**
          * 倒计时
          */
@@ -117,18 +118,18 @@ public class DrawActivity extends AppCompatActivity {
         int radius = 50;
 
 
-//        setNetWorkData(width, height, radius);
+        setNetWorkData(width, height, radius);
+//
+//        lists.add(new NumberBean.DataBean(60, "0000FF", 8, 800, 1500, 50));
+//        lists.add(new NumberBean.DataBean(59, "FF0000", 6, 100, 100, 50));
+//        lists.add(new NumberBean.DataBean(50, "0000FF", 4, 500, 500, 50));
+//        lists.add(new NumberBean.DataBean(70, "0000FF", 5, 500, 800, 50));
+//        lists.add(new NumberBean.DataBean(77, "FFFF00", 3, 500, 900, 50));
+//        lists.add(new NumberBean.DataBean(89, "0000FF", 7, 500, 1000, 50));
+//        lists.add(new NumberBean.DataBean(35, "00FF00", 4, 300, 100, 50));
+//        lists.add(new NumberBean.DataBean(99, "00FF00", 5, 600, 1000, 50));
 
-        lists.add(new NumberBean.DataBean(60, "0000FF", 8, 800, 1500, 50));
-        lists.add(new NumberBean.DataBean(59, "FF0000", 6, 100, 100, 50));
-        lists.add(new NumberBean.DataBean(50, "0000FF", 4, 500, 500, 50));
-        lists.add(new NumberBean.DataBean(70, "0000FF", 5, 500, 800, 50));
-        lists.add(new NumberBean.DataBean(77, "FFFF00", 3, 500, 900, 50));
-        lists.add(new NumberBean.DataBean(89, "0000FF", 7, 500, 1000, 50));
-        lists.add(new NumberBean.DataBean(35, "00FF00", 4, 300, 100, 50));
-        lists.add(new NumberBean.DataBean(99, "00FF00", 5, 600, 1000, 50));
 
-        arr1 = new NumberBean.DataBean[lists.size()];
         for (NumberBean.DataBean list : lists) {
             setCode(list);
             list1.add(list.getNum());
@@ -147,7 +148,7 @@ public class DrawActivity extends AppCompatActivity {
                 .addCallAdapterFactory(RxJava2CallAdapterFactory.create())
                 .build();
         ApiGet apiGet = retrofit.create(ApiGet.class);
-        apiGet.getApi("numCount/" + numCount + "/radius/" + radius + "/maxX/" + width + "/maxY/" + height)
+        apiGet.getApi("numCount/" + numCount + "/radius/" + radius + "/width/" + width + "/height/" + height)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(new Observer<NumberBean>() {
@@ -164,6 +165,10 @@ public class DrawActivity extends AppCompatActivity {
                             for (NumberBean.DataBean bean : lists) {
                                 list1.add(bean.getNum());
                                 setCode(bean);
+                            }
+                            arr1 = new NumberBean.DataBean[lists.size()];
+                            for (int i = 0; i < lists.size(); i++) {
+                                arr1[i] = lists.get(i);
                             }
                         }
 

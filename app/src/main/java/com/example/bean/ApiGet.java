@@ -16,6 +16,6 @@ public interface ApiGet {
 
     String APIGET = "http://192.168.31.13:8000/";
 
-    @GET()
+    @GET
     Observable<NumberBean> getApi(@Url String ur);
 }
